@@ -29,7 +29,7 @@ var ApiCalendar = function () {
             this.listenSign = this.listenSign.bind(this);
             this.onLoad = this.onLoad.bind(this);
             this.setCalendar = this.setCalendar.bind(this);
-            this.updateEvent = this.updateEvent.bind(this);
+            this.listCalendars = this.listCalendars.bind(this);
             this.handleClientLoad();
         } catch (e) {
             console.log(e);
@@ -228,14 +228,31 @@ var ApiCalendar = function () {
                 'resource': event
             });
         }
+        /**
+         * List all user calendars
+         * @param {number} maxResults to see
+         * @param {boolean} showHidden show hidden calendars
+         * @param {boolean} showDeleted show deleted calendars
+         * @param {string} minAccessRole one of "freeBusyReader", "owner", "reader", "writer"
+         * @returns {any}
+         */
+
     }, {
-        key: 'updateEvent',
-        value: function updateEvent(event, eventId, calendarId = this.calendar) {
-            return this.gapi.client.calendar.events.patch({
-                calendarId,
-                eventId,
-                'resource': event,
-            });
+        key: 'listCalendars',
+        value: function listCalendars(maxResults) {
+            var showHidden = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+            var showDeleted = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
+
+            if (this.gapi) {
+                return this.gapi.client.calendarList.list({
+                    'maxResults': maxResults,
+                    'showHidden': true,
+                    'showDeleted': true
+                });
+            } else {
+                console.log("Error: this.gapi not loaded");
+                return false;
+            }
         }
     }]);
 

@@ -16,6 +16,7 @@ class ApiCalendar {
             this.listenSign = this.listenSign.bind(this);
             this.onLoad = this.onLoad.bind(this);
             this.setCalendar = this.setCalendar.bind(this);
+            this.listCalendars = this.listCalendars.bind(this);
             this.handleClientLoad();
         }
         catch (e) {
@@ -173,6 +174,27 @@ class ApiCalendar {
             'calendarId': calendarId,
             'resource': event,
         });
+    }
+    /**
+     * List all user calendars
+     * @param {number} maxResults to see
+     * @param {boolean} showHidden show hidden calendars
+     * @param {boolean} showDeleted show deleted calendars
+     * @param {string} minAccessRole one of "freeBusyReader", "owner", "reader", "writer"
+     * @returns {any}
+     */
+    listCalendars(maxResults, showHidden = true, showDeleted = true) {
+        if (this.gapi) {
+            return this.gapi.client.calendarList.list({
+                'maxResults': maxResults,
+                'showHidden': true,
+                'showDeleted': true,
+            });
+        }
+        else {
+            console.log("Error: this.gapi not loaded");
+            return false;
+        }
     }
 }
 let apiCalendar;
